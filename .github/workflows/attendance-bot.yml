@@ -1,0 +1,14 @@
+name: Attendance Report Bot
+
+on:
+  schedule:
+    - cron: '0 0 * * 1-5'  # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  trigger-apps-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Google Apps Script for Both Reports
+        run: |
+          curl -X GET "https://script.google.com/macros/s/AKfycbwwKhks4O__M5OQ5fdvbdWvv90Dku32W3o2BLSS85FryqxtftUo9bwF1KXzRo2KP4-s/exec"
