@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Trigger Google Apps Script for Both Reports
         run: |
-          curl -X GET "https://script.google.com/macros/s/AKfycbwwKhks4O__M5OQ5fdvbdWvv90Dku32W3o2BLSS85FryqxtftUo9bwF1KXzRo2KP4-s/exec"
+          curl -X GET "https://script.google.com/macros/s/AKfycbwgtB-5aELHqzQFXwb_PUZJTveKbyl6Zix-jW5uWmg3WDyaVGKKjwannK8O3M1ygrsH/exec"
