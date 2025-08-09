@@ -2,13 +2,21 @@ name: Attendance Report Bot
 
 on:
   schedule:
-    - cron: '0 0 * * 1-5'  # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
+    # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
+    - cron: '0 0 * * 1-5'
   workflow_dispatch:
 
 jobs:
   trigger-apps-script:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if today is Mon–Fri
+        run: |
+          DAY=$(date +%u)  # 1 = Monday, 7 = Sunday
+          if [ $DAY -lt 1 ] || [ $DAY -gt 5 ]; then
+            echo "Today is weekend. Skipping..."
+            exit 0
+          fi
       - name: Trigger Google Apps Script for Both Reports
         run: |
           curl -X GET "https://script.google.com/macros/s/AKfycbwgtB-5aELHqzQFXwb_PUZJTveKbyl6Zix-jW5uWmg3WDyaVGKKjwannK8O3M1ygrsH/exec"
