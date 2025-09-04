@@ -1,0 +1,14 @@
+name: Trigger Google Script Reset
+
+on:
+  workflow_dispatch: # manual trigger button sa GitHub
+  schedule:
+    - cron: "0 16 * * 0-4" # 12:00 AM PH = 16:00 UTC, Sunday–Thursday
+
+jobs:
+  run-reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Google Apps Script Reset
+        run: |
+          curl -L -X GET "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec"
