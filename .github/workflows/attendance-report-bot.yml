@@ -1,22 +1,46 @@
-name: Attendance Report Bot
+name: Attendance Trigger Bot
 
 on:
   schedule:
-    # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
-    - cron: '0 0 * * 1-5'
-  workflow_dispatch:
+    # Monâ€“Fri only (UTC time converted from PH +8)
+    - cron: "0 23 * * 0-4"   # 7:00 AM PH â†’ markremainingAsAbsent
+    - cron: "0 0 * * 1-5"    # 8:00 AM PH â†’ sendStyledSummary
+    - cron: "0 1 * * 1-5"    # 9:00 AM PH â†’ emailattendanceReport
+    - cron: "0 8 * * 1-5"    # 4:00 PM PH â†’ BackupAt4PM
+    - cron: "0 15 * * 1-5"   # 11:00 PM PH â†’ resetSheet2Log, resetLogAtMidnight
+
+  workflow_dispatch: # manual run button
 
 jobs:
-  trigger-apps-script:
+  run-triggers:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if today is Mon–Fri
+      - name: Call Apps Script - markremainingAsAbsent
+        if: github.event.schedule == '0 23 * * 0-4'
         run: |
-          DAY=$(date +%u)  # 1 = Monday, 7 = Sunday
-          if [ $DAY -lt 1 ] || [ $DAY -gt 5 ]; then
-            echo "Today is weekend. Skipping..."
-            exit 0
-          fi
-      - name: Trigger sendBothReports
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=markremainingAsAbsent"
+
+      - name: Call Apps Script - sendStyledSummary
+        if: github.event.schedule == '0 0 * * 1-5'
         run: |
-          curl -X GET "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec"
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=sendStyledSummary"
+
+      - name: Call Apps Script - emailattendanceReport
+        if: github.event.schedule == '0 1 * * 1-5'
+        run: |
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=emailattendanceReport"
+
+      - name: Call Apps Script - BackupAt4PM
+        if: github.event.schedule == '0 8 * * 1-5'
+        run: |
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=BackupAt4PM"
+
+      - name: Call Apps Script - resetSheet2Log
+        if: github.event.schedule == '0 15 * * 1-5'
+        run: |
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=resetSheet2Log"
+
+      - name: Call Apps Script - resetLogAtMidnight
+        if: github.event.schedule == '0 15 * * 1-5'
+        run: |
+          curl -L -X POST "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec?trigger=resetLogAtMidnight"
