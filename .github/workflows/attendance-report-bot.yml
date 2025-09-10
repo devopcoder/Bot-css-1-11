@@ -17,6 +17,6 @@ jobs:
             echo "Today is weekend. Skipping..."
             exit 0
           fi
-      - name: Trigger Google Apps Script for Both Reports
+      - name: Trigger sendBothReports
         run: |
           curl -X GET "https://script.google.com/macros/s/AKfycbyv9vi47VEP2xY2TOVONf8OdGk_Cy4otSjJBsq5xGMCGFz1B2uk3qzG9JY6e_F5NK5M/exec"
