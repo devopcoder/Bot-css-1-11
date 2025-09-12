@@ -1,35 +1,22 @@
-name: Attendance Bot
+name: Attendance Report Bot
 
 on:
   schedule:
-    # PH time converted to UTC (PH -8)
-    - cron: "23 23 * * 0-4"   # 7:00 AM PH (markremainingAsAbsent)
-    - cron: "0 0 * * 1-5"     # 8:00 AM PH (sendStyledSummary)
-    - cron: "1 0 * * 1-5"     # 8:01 AM PH (emailAttendanceReport)
-    - cron: "8 8 * * 1-5"     # 4:00 PM PH (BackupAt4PM)
-    - cron: "15 15 * * 1-5"   # 11:00 PM PH (resetSheet2Log)
-    - cron: "15 16 * * 1-5"   # 12:00 Midnight PH (resetLogAtMidnight)
+    # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
+    - cron: '0 0 * * 1-5'
   workflow_dispatch:
 
 jobs:
-  run-triggers:
+  trigger-apps-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Call sendStyledSummary
+      - name: Check if today is Mon–Fri
         run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=sendStyledSummary"
-      - name: Call emailAttendanceReport
+          DAY=$(date +%u)  # 1 = Monday, 7 = Sunday
+          if [ $DAY -gt 5 ]; then
+            echo "Today is Saturday or Sunday. Skipping..."
+            exit 0
+          fi
+      - name: Trigger Google Apps Script for Both Reports
         run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=emailAttendanceReport"
-      - name: Call BackupAt4PM
-        run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=BackupAt4PM"
-      - name: Call resetSheet2Log
-        run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=resetSheet2Log"
-      - name: Call markremainingAsAbsent
-        run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=markremainingAsAbsent"
-      - name: Call resetLogAtMidnight
-        run: |
-          curl -L "https://script.google.com/macros/s/AKfycbwSGQZEOmEf-w7yUsc1NrhdLzFArLfdbGxz77lcR7FDCCJ01tVUqNW3PhBBQhaFE2Cy/exec?action=resetLogAtMidnight"
+          curl -X GET "https://script.google.com/macros/s/AKfycbwgtB-5aELHqzQFXwb_PUZJTveKbyl6Zix-jW5uWmg3WDyaVGKKjwannK8O3M1ygrsH/exec"
