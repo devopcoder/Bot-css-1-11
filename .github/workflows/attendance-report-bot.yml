@@ -1,11 +1,11 @@
 name: Attendance Report Bot
-
+#run if Mon-fri at 8:00 AM PH Time (00:00 UTC)
 on:
   schedule:
     # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
     - cron: '0 0 * * 1-5'
   workflow_dispatch:
-
+ 
 jobs:
   trigger-apps-script:
     runs-on: ubuntu-latest
