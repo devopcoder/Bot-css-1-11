@@ -1,5 +1,6 @@
 name: Attendance Report Bot
-#run if Mon-fri at 8:00 AM PH Time (00:00 UTC)
+
+
 on:
   schedule:
     # Mon–Fri at 8:00 AM PH Time (00:00 UTC)
