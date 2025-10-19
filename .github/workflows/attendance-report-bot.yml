@@ -20,4 +20,4 @@ jobs:
           fi
       - name: Trigger Google Apps Script for Both Reports
         run: |
-          curl -X GET "https://script.google.com/macros/s/AKfycbx9xJTbnmQ7EjrXAhaLMYTBJBNUZnwWymQN7x--dAhXMxbeHbMfXKEl0ltDogyH6bky9w/exec"
+          curl -X GET "https://script.google.com/macros/s/AKfycbwHPCfx2XbVgOpUcQUsgnKbVULu6VNLB5xzho8YPGK3c4lJynSQpKh6B3rgS64kWRnj/exec"
